@@ -3,7 +3,7 @@
 ;; Copyright (C) 2012 Damien Cassou
 ;;
 ;; Author: Damien Cassou <damien.cassou@gmail.com>
-;; GIT: https://github.com/cassou/shell-switcher
+;; GIT: https://github.com/DamienCassou/shell-switcher
 ;; Version: 0.5
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp switcher
