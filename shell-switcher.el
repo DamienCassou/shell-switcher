@@ -135,7 +135,8 @@ This function is to be used as value for `shell-switcher-new-shell-function'."
 	  (and (= (rswitcher-length sswitcher-ring) 1)
 	       (sswitcher--in-shell-buffer-p)))
       (sswitcher--no-more-shell-buffers)
-    (rswitcher-switch-full sswitcher-ring)
+    (when (sswitcher--in-shell-buffer-p)
+      (rswitcher-switch-full sswitcher-ring))
     (sswitcher--display-shell-buffer)
     (sswitcher--prepare-for-fast-key)))
 
