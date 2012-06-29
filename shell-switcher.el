@@ -33,6 +33,9 @@
 ;;
 ;; (require 'shell-switcher)
 ;;
+;; You have to customize `shell-switcher-new-shell-function' if
+;; `eshell' is not your shell of choice.
+;;
 ;; To easily switch between shell buffers, you can bind keys as
 ;; follows:
 ;;
