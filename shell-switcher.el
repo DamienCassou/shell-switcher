@@ -114,13 +114,17 @@ This function is to be used as value for `shell-switcher-new-shell-function'."
 
 (defun sswitcher--prepare-for-fast-key ()
   (let* ((repeat-key (event-basic-type last-input-event))
-	 (repeat-key-str (format-kbd-macro (vector repeat-key))))
+	 (repeat-key-str (format-kbd-macro (vector repeat-key)))
+	 (message (format "Type %s again to continue switching"
+			  (format-kbd-macro (vector repeat-key)))))
     (set-temporary-overlay-map
      (let ((map (make-sparse-keymap)))
        (define-key map (vector repeat-key)
-	 (lambda () (interactive)
-	   (sswitcher-switch-partially)))
-       map) t)))
+	 `(lambda () (interactive)
+	    (sswitcher-switch-partially)
+	    (message ,message)))
+       map) t)
+    (message message)))
 
 (defun sswitcher--display-shell-buffer ()
   (sswitcher--clean-buffers)
