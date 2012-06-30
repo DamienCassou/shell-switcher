@@ -84,7 +84,7 @@ This function is to be used as value for
 
 (defun sswitcher--most-recent ()
   "Return the most recently accessed shell."
-  (rswitcher-current sswitcher-ring))
+  (rswitcher-most-recent sswitcher-ring))
 
 (defun sswitcher--most-recent-shell-valid-p ()
   "Check that the most recently created shell can still be accessed."
@@ -94,7 +94,7 @@ This function is to be used as value for
   "Remove all shell buffers until we find a valid one."
   (while (and (not (rswitcher-empty-p sswitcher-ring))
 	      (not (sswitcher--most-recent-shell-valid-p)))
-    (rswitcher-delete-current sswitcher-ring)))
+    (rswitcher-delete-most-recent sswitcher-ring)))
 
 (defun sswitcher--shell-exist-p ()
   "Check that there is at least one valid shell to switch to."
