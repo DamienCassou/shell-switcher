@@ -37,8 +37,6 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl))
-
 (defun rswitcher-make ()
   "Return a new switcher.
 The switcher is internally implemented as a cons. The `car' of
@@ -113,7 +111,6 @@ field of SWITCHER."
   (memq elt (rswitcher--elements switcher)))
 
 (defun rswitcher--delete (switcher pos)
-  (assert (and (>= pos 0) (< pos (rswitcher-length switcher))))
   (prog1
       ;; return the deleted element
       (elt (rswitcher--elements switcher) pos)
