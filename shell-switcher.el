@@ -105,18 +105,28 @@ This function is to be used as value for
   "Check that the current buffer is a shell buffer."
   (rswitcher-memq sswitcher-ring (current-buffer)))
 
-(defun sswitcher--new-shell ()
+(defun sswitcher--new-shell (&optional other-window)
   "Create and display a new shell.
+If OTHER-WINDOW is nil (the default), the new shell buffer is
+displayed in the current window. If OTHER-WINDOW is t, change
+another window.
 
 This function uses `shell-switcher-new-shell-function' to decide
 what kind of shell to create."
-  (rswitcher-add sswitcher-ring (funcall shell-switcher-new-shell-function))
-  (sswitcher--display-shell-buffer))
+  (save-window-excursion
+    (rswitcher-add sswitcher-ring
+		   (funcall shell-switcher-new-shell-function)))
+  (sswitcher--display-shell-buffer other-window))
 
-(defun sswitcher--no-more-shell-buffers ()
-  "Propose to create a new shell as there is no more to switch to."
+(defun sswitcher--no-more-shell-buffers (&optional other-window)
+  "Propose to create a new shell as there is no more to switch to.
+If user answers positively, a new shell buffer is created. If
+OTHER-WINDOW is nil (the default), the shell buffer is displayed
+in the current window. If OTHER-WINDOW is t, change another
+window.
+"
   (if (y-or-n-p "No more buffers, create new one? ")
-      (sswitcher--new-shell)))
+      (sswitcher--new-shell other-window)))
 
 (defun sswitcher--prepare-for-fast-key ()
   "Set a keymap so that one can switch buffers by pressing 1 key.
@@ -137,14 +147,44 @@ key is pressed, calls `sswitcher-switch-partially'."
        map) t)
     (message message)))
 
-(defun sswitcher--display-shell-buffer ()
-  "Display the most recently accessed shell buffer."
+(defun sswitcher--display-shell-buffer (&optional other-window)
+  "Display the most recently accessed shell buffer.
+If OTHER-WINDOW is nil (the default), change the current window.
+If OTHER-WINDOW is t, change another window."
   (if (sswitcher--shell-exist-p)
-      (switch-to-buffer (sswitcher--most-recent))
+      (if other-window
+	  (switch-to-buffer-other-window (sswitcher--most-recent) t)
+	(switch-to-buffer (sswitcher--most-recent) t))
     (message "No shell buffer to display")))
 
+(defun sswitcher-switch-buffer (&optional other-window)
+  "Switch to the most recently accessed buffer.
+Switch to the most recently accessed shell buffer that is not the
+current one. Pressing the last key of the key sequence that call
+this command will result in switching to the next shell buffer :
+for example, if `C-'' is bound to this command, repeatedly
+pressing `'' (quote) will let the user visit all shell
+buffers (this is actually done by `sswitcher-switch-partially'.
+If OTHER-WINDOW is nil (the default), the current window is used
+to display the shell buffer. If OTHER-WINDOW is t, the buffer is
+displayed in the other window.
+
+If there is no shell buffer or if the only shell buffer is the
+current buffer, propose the creation of a new shell buffer and
+display it in the current window (if OTHER-WINDOW is nil, the
+default) or the other window (if OTHER-WINDOW is t)."
+  (interactive)
+  (if (or (not (sswitcher--shell-exist-p))
+	  (and (= (rswitcher-length sswitcher-ring) 1)
+	       (sswitcher--in-shell-buffer-p)))
+      (sswitcher--no-more-shell-buffers other-window)
+    (when (sswitcher--in-shell-buffer-p)
+      (rswitcher-switch-full sswitcher-ring))
+    (sswitcher--display-shell-buffer other-window)
+    (sswitcher--prepare-for-fast-key)))
+
 (defun shell-switcher-switch-buffer ()
-  "Provide fast access to all shell buffers.
+  "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
 current one. Pressing the last key of the key sequence that call
 this command will result in switching to the next shell buffer :
@@ -155,14 +195,7 @@ buffers (this is actually done by `sswitcher-switch-partially'.
 If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer."
   (interactive)
-  (if (or (not (sswitcher--shell-exist-p))
-	  (and (= (rswitcher-length sswitcher-ring) 1)
-	       (sswitcher--in-shell-buffer-p)))
-      (sswitcher--no-more-shell-buffers)
-    (when (sswitcher--in-shell-buffer-p)
-      (rswitcher-switch-full sswitcher-ring))
-    (sswitcher--display-shell-buffer)
-    (sswitcher--prepare-for-fast-key)))
+  (sswitcher-switch-buffer))
 
 (defun sswitcher-switch-partially ()
   "Switch to the next most recently accessed buffer.
@@ -175,6 +208,13 @@ most recent key sequence."
       (sswitcher--no-more-shell-buffers)
     (rswitcher-switch-partial sswitcher-ring)
     (sswitcher--display-shell-buffer)))
+
+(defun shell-switcher-switch-buffer-other-window ()
+  "Switch to the most recently accessed buffer in another window.
+Same as `shell-switcher-switch-buffer' but change another
+window."
+  (interactive)
+  (sswitcher-switch-buffer t))
 
 (defun shell-switcher-new-shell ()
   "Unconditionaly create and display a new shell buffer."
