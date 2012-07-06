@@ -125,7 +125,7 @@ OTHER-WINDOW is nil (the default), the shell buffer is displayed
 in the current window. If OTHER-WINDOW is t, change another
 window.
 "
-  (if (y-or-n-p "No more buffers, create new one? ")
+  (if (y-or-n-p "No active shell buffer, create new one? ")
       (sswitcher--new-shell other-window)))
 
 (defun sswitcher--prepare-for-fast-key ()
