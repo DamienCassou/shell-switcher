@@ -5,7 +5,7 @@ NAME=shell-switcher
 VERSION=0.1.1
 DOC="Easily switch between shell buffers, like with alt+tab."
 REQUIREMENTS=requirements.txt
-package_parts = rswitcher.el shell-switcher.el
+package_parts = rswitcher.el shell-switcher.el README.md COPYING AUTHORS
 
 # Everything beyond here should be generic
 PACKAGE=$(NAME)-$(VERSION)
