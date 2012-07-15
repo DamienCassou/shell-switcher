@@ -8,12 +8,21 @@ See the [screencast](http://www.youtube.com/watch?v=jNSrrQwcCr4
 
 # Installation
 
-Just download from
+## With Emacs' packaging system
+
+Make sure you have [marmalade repository](http://marmalade-repo.org/)
+ready to use and type `M-x package-install shell-switcher`.
+
+## Manually
+
+Download shell-switcher from
 [github](https://github.com/DamienCassou/shell-switcher
-"shell-switcher project page") and add to your `load-path`. Then, add
-the following to your init file:
+"shell-switcher project page") and add it to your `load-path`. Then,
+add the following to your init file:
 
     (require 'shell-switcher)
+
+# Configuration
 
 You have to customize `shell-switcher-new-shell-function` if eshell
 is not your shell of choice.
