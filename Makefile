@@ -2,7 +2,7 @@
 
 # These are the variables that are specific to the package
 NAME=shell-switcher
-VERSION=0.1
+VERSION=0.1.1
 DOC="Easily switch between shell buffers, like with alt+tab."
 REQUIREMENTS=requirements.txt
 package_parts = rswitcher.el shell-switcher.el
