@@ -24,21 +24,30 @@ add the following to your init file:
 
 # Configuration
 
-You have to customize `shell-switcher-new-shell-function` if eshell
-is not your shell of choice.
+To activate shell-switcher, you have to set the variable
+`shell-switcher-mode` to t, either through `customize-variable` or
+with:
 
-To easily switch between shell buffers, you can bind keys as follows:
+   (setq shell-switcher-mode t)
 
-    (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
-    (global-set-key (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
-    (global-set-key (kbd "C-M-'")   'shell-switcher-new-shell)
-
+You have to customize `shell-switcher-new-shell-function` if eshell is
+not your shell of choice.
 
 # Usage
 
-Using the previously defined key bindings:
+The standard key bindings are:
 
-- `C-'` opens the first 2 buffers and switch between them
+- `C-'` opens the first 2 buffers (one after the other) and switch between them
 - Repeating `'` continues switching after an initial `C-'`
 - `C-M-'` forces the creation of a new shell
 - `C-x 4 '` is similar to `C-'` but within another window
+
+You can change them by adapting and adding the following to your
+configuration file:
+
+    (define-key shell-switcher-mode-map (kbd "C-'")
+	            'shell-switcher-switch-buffer)
+    (define-key shell-switcher-mode-map (kbd "C-x 4 '")
+	            'shell-switcher-switch-buffer-other-window)
+    (define-key shell-switcher-mode-map (kbd "C-M-'")
+	            'shell-switcher-new-shell)
