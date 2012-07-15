@@ -39,8 +39,9 @@
 ;; To easily switch between shell buffers, you can bind keys as
 ;; follows:
 ;;
-;; (global-set-key (kbd "C-'")   'shell-switcher-switch-buffer)
-;; (global-set-key (kbd "C-M-'") 'shell-switcher-new-shell)
+;; (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
+;; (global-set-key (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
+;; (global-set-key (kbd "C-M-'")   'shell-switcher-new-shell)
 ;;
 ;; After pressing one of these keys, you can subsequently press the
 ;; last character of the key (a quote in this case) to continue
