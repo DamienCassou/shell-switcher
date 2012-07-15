@@ -74,6 +74,14 @@ shell buffer. `shell-switcher-make-shell' and
 
   :group 'shell-switcher)
 
+(defvar shell-switcher-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-'") 'shell-switcher-switch-buffer)
+    (define-key map (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
+    (define-key map (kbd "C-M-'") 'shell-switcher-new-shell)
+    map)
+ "Keymap to use in shell-switcher mode.")
+
 (define-minor-mode shell-switcher-mode
   "Toggle shell-switcher mode.
 Interactively with no argument, this command toggles the mode. A
@@ -93,9 +101,7 @@ see commands \\[shell-switcher-switch-buffer-other-window] and
   :init-value nil
   ;; nothing in the mode line:
   :lighter nil
-  :keymap '(((kbd "C-'") . 'shell-switcher-switch-buffer)
-	    ((kbd "C-x 4 '") . 'shell-switcher-switch-buffer-other-window)
-	    ((kbd "C-M-'") . 'shell-switcher-new-shell)))
+  :keymap shell-switcher-mode-map)
 
 (defun shell-switcher-make-shell ()
   "Ensure the creation of a new `shell'.
