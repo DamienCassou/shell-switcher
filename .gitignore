@@ -1,2 +1,4 @@
 *.elc
 /README.html
+shell-switcher-*/
+shell-switcher*.tar
