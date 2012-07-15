@@ -228,6 +228,4 @@ window."
 
 (provide 'shell-switcher)
 
-(provide 'shell-switcher)
-
 ;;; shell-switcher.el ends here
