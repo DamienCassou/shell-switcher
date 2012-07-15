@@ -64,6 +64,7 @@
   :group 'extensions
   :group 'convenience)
 
+;;;###autoload
 (defcustom shell-switcher-new-shell-function 'shell-switcher-make-eshell
   "This variable references a function used to create new shells.
 The function must take 0 arguments and return a newly created
@@ -184,6 +185,7 @@ default) or the other window (if OTHER-WINDOW is t)."
     (sswitcher--display-shell-buffer other-window)
     (sswitcher--prepare-for-fast-key)))
 
+;;;###autoload
 (defun shell-switcher-switch-buffer ()
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
@@ -210,6 +212,7 @@ most recent key sequence."
     (rswitcher-switch-partial sswitcher-ring)
     (sswitcher--display-shell-buffer)))
 
+;;;###autoload
 (defun shell-switcher-switch-buffer-other-window ()
   "Switch to the most recently accessed buffer in another window.
 Same as `shell-switcher-switch-buffer' but change another
@@ -217,6 +220,7 @@ window."
   (interactive)
   (sswitcher-switch-buffer t))
 
+;;;###autoload
 (defun shell-switcher-new-shell ()
   "Unconditionaly create and display a new shell buffer."
   (interactive)
