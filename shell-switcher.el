@@ -74,6 +74,29 @@ shell buffer. `shell-switcher-make-shell' and
 
   :group 'shell-switcher)
 
+(define-minor-mode shell-switcher-mode
+  "Toggle shell-switcher mode.
+Interactively with no argument, this command toggles the mode. A
+positive prefix argument enables the mode, any other prefix
+argument disables it. From Lisp, argument omitted or nil enables
+the mode, `toggle' toggles the state.
+
+When shell-switcher mode is enabled, switching and creating shell
+buffers is just a matter of calling
+\\[shell-switcher-switch-buffer]. Then, you can type the last key
+of this key binding again to continue switching. Additionally,
+see commands \\[shell-switcher-switch-buffer-other-window] and
+\\[shell-switcher-new-shell]."
+  :group 'shell-switcher
+  :global t
+  ;; disabled by default:
+  :init-value nil
+  ;; nothing in the mode line:
+  :lighter nil
+  :keymap '(((kbd "C-'") . 'shell-switcher-switch-buffer)
+	    ((kbd "C-x 4 '") . 'shell-switcher-switch-buffer-other-window)
+	    ((kbd "C-M-'") . 'shell-switcher-new-shell)))
+
 (defun shell-switcher-make-shell ()
   "Ensure the creation of a new `shell'.
 This function is to be used as value for
