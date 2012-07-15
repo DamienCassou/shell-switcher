@@ -74,6 +74,7 @@ shell buffer. `shell-switcher-make-shell' and
 
   :group 'shell-switcher)
 
+;;;###autoload
 (defvar shell-switcher-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-'") 'shell-switcher-switch-buffer)
@@ -82,6 +83,7 @@ shell buffer. `shell-switcher-make-shell' and
     map)
  "Keymap to use in shell-switcher mode.")
 
+;;;###autoload
 (define-minor-mode shell-switcher-mode
   "Toggle shell-switcher mode.
 Interactively with no argument, this command toggles the mode. A
