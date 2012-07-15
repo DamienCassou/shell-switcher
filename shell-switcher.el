@@ -60,7 +60,9 @@
 (defconst sswitcher-ring (rswitcher-make))
 
 (defgroup shell-switcher nil
-  "Handling multiple shells")
+  "Handling multiple shells"
+  :group 'extensions
+  :group 'convenience)
 
 (defcustom shell-switcher-new-shell-function 'shell-switcher-make-eshell
   "This variable references a function used to create new shells.
