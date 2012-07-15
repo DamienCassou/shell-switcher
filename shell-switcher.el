@@ -175,7 +175,6 @@ If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer and
 display it in the current window (if OTHER-WINDOW is nil, the
 default) or the other window (if OTHER-WINDOW is t)."
-  (interactive)
   (if (or (not (sswitcher--shell-exist-p))
 	  (and (= (rswitcher-length sswitcher-ring) 1)
 	       (sswitcher--in-shell-buffer-p)))
