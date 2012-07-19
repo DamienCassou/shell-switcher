@@ -1,0 +1,14 @@
+2012-07-19  Damien Cassou  <damien.cassou@gmail.com>
+
+	* shell-switcher.el: Make the package compatible with Emacs 23 and 24
+
+2012-07-15  Damien Cassou  <damien.cassou@gmail.com>
+
+	* shell-switcher.el: Add a minor mode
+
+  Copyright (C) 2012 Damien Cassou.
+
+  This file is not part of GNU Emacs.
+
+  Copying and distribution of this file, with or without modification, are
+  permitted provided the copyright notice and this notice are preserved.
