@@ -163,6 +163,44 @@ window.
   (if (y-or-n-p "No active shell buffer, create new one? ")
       (sswitcher--new-shell other-window)))
 
+(when (not (fboundp 'set-temporary-overlay-map))
+  ;; Backport this function from newer emacs versions
+  (defun set-temporary-overlay-map (map &optional keep-pred)
+    "Set a new keymap that will only exist for a short period of time.
+The new keymap to use must be given in the MAP variable. When to
+remove the keymap depends on user input and KEEP-PRED:
+
+- if KEEP-PRED is nil (the default), the keymap disappears as
+  soon as any key is pressed, whether or not the key is in MAP;
+
+- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
+  in MAP is pressed;
+
+- otherwise, KEEP-PRED must be a 0-arguments predicate that will
+  decide if the keymap should be removed (if predicate returns
+  nil) or kept (otherwise). The predicate will be called after
+  each key sequence."
+
+    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
+	   (overlaysym (make-symbol "t"))
+	   (alist (list (cons overlaysym map)))
+	   (clearfun
+	    `(lambda ()
+	       (unless ,(cond ((null keep-pred) nil)
+			      ((eq t keep-pred)
+			       `(eq this-command
+				    (lookup-key ',map
+						(this-command-keys-vector))))
+			      (t `(funcall ',keep-pred)))
+		 (remove-hook 'pre-command-hook ',clearfunsym)
+		 (setq emulation-mode-map-alists
+		       (delq ',alist emulation-mode-map-alists))))))
+      (set overlaysym overlaysym)
+      (fset clearfunsym clearfun)
+      (add-hook 'pre-command-hook clearfunsym)
+
+      (push alist emulation-mode-map-alists))))
+
 (defun sswitcher--prepare-for-fast-key ()
   "Set a keymap so that one can switch buffers by pressing 1 key.
 The key to be pressed to continue switching buffers is the last
