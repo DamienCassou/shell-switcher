@@ -106,7 +106,8 @@ element is pointed to by the last pos field of SWITCHER."
 
 (defun rswitcher--push (switcher elt)
   "Update SWITCHER's elements by adding ELT in front."
-  (setcar switcher (cons elt (car switcher))))
+  (unless (member elt (rswitcher--elements switcher))
+    (setcar switcher (cons elt (rswitcher--elements switcher)))))
 
 (defun rswitcher-make-most-recent-elt-the-first (switcher)
   "Move most recent element to the beginning of SWITCHER's elements."

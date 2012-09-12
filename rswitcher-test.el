@@ -10,6 +10,15 @@
     (rswitcher-add s 'b)
     (should (equal 2 (rswitcher-length s)))))
 
+(ert-deftest rswitcher-test-add-no-duplicate ()
+  "rswitcher-add does not add duplicates"
+  (let ((s (rswitcher-make)))
+    (should (equal 0 (rswitcher-length s)))
+    (rswitcher-add s 'c)
+    (should (equal 1 (rswitcher-length s)))
+    (rswitcher-add s 'c)
+    (should (equal 1 (rswitcher-length s)))))
+
 (ert-deftest rswitcher-test-delete-head ()
   "rswitcher--delete removes head correctly"
   (let ((s (rswitcher-make)))
