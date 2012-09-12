@@ -5,7 +5,7 @@
 ;; Author: Damien Cassou <damien.cassou@gmail.com>
 ;; Url: https://github.com/DamienCassou/shell-switcher
 ;; GIT: https://github.com/DamienCassou/shell-switcher
-;; Version: 0.1.4
+;; Version: 0.1.5
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp shell eshell term switcher
 ;;
