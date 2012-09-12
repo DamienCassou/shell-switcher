@@ -51,3 +51,9 @@ configuration file:
 	            'shell-switcher-switch-buffer-other-window)
     (define-key shell-switcher-mode-map (kbd "C-M-'")
 	            'shell-switcher-new-shell)
+
+If you tend to create shells without using shell-switcher but still
+would like to easily switch between them, write the following (to be
+adapted if eshell is not your preferred shell):
+
+    (add-hook 'eshell-mode-hook 'sswitcher-manually-register-shell)
