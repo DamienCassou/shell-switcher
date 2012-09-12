@@ -37,20 +37,6 @@
 ;; You have to customize `shell-switcher-new-shell-function' if
 ;; `eshell' is not your shell of choice.
 ;;
-;; To easily switch between shell buffers, you can bind keys as
-;; follows:
-;;
-;; (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
-;; (global-set-key (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
-;; (global-set-key (kbd "C-M-'")   'shell-switcher-new-shell)
-;;
-;; After pressing one of these keys, you can subsequently press the
-;; last character of the key (a quote in this case) to continue
-;; switching. For example, with the previous bindings, you can type
-;; "C-' ' '" to switch to the 3rd shell buffer. Like ALT+tab in
-;; standard window managers, the list of shell buffers is arranged so
-;; that recently accessed ones are at the beginning of the list.
-;;
 ;;; code:
 ;;
 ;; The following code uses the "sswitcher" prefix for all "private"
