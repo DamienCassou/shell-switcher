@@ -1,6 +1,15 @@
 (require 'rswitcher)
 (require 'ert)
 
+(ert-deftest rswitcher-test-add-increment-length ()
+  "rswitcher-add increases length"
+  (let ((s (rswitcher-make)))
+    (should (equal 0 (rswitcher-length s)))
+    (rswitcher-add s 'c)
+    (should (equal 1 (rswitcher-length s)))
+    (rswitcher-add s 'b)
+    (should (equal 2 (rswitcher-length s)))))
+
 (ert-deftest rswitcher-test-delete-head ()
   "rswitcher--delete removes head correctly"
   (let ((s (rswitcher-make)))
