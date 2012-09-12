@@ -127,11 +127,12 @@ This function is to be used as value for
   "Check that the current buffer is a shell buffer."
   (rswitcher-memq sswitcher-ring (current-buffer)))
 
-(defun sswitcher-manually-register-shell ()
+(defun shell-switcher-manually-register-shell ()
   "Register the current buffer in shell-switcher.
 Must be executed manually or from a shell mode hook when the
 current buffer is a shell that has been created without using a
 shell-switcher function."
+  (interactive)
   (rswitcher-add sswitcher-ring (current-buffer)))
 
 (defun sswitcher--new-shell (&optional other-window)

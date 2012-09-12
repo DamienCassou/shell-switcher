@@ -56,4 +56,4 @@ If you tend to create shells without using shell-switcher but still
 would like to easily switch between them, write the following (to be
 adapted if eshell is not your preferred shell):
 
-    (add-hook 'eshell-mode-hook 'sswitcher-manually-register-shell)
+    (add-hook 'eshell-mode-hook 'shell-switcher-manually-register-shell)
