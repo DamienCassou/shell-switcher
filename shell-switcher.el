@@ -61,6 +61,13 @@ shell buffer. `shell-switcher-make-shell' and
 
   :group 'shell-switcher)
 
+(defvar sswitcher--starting-default-directory nil
+  "Backup `default-directory' for the next shell creation.
+This variable is set to `default-directory' when starting to
+switch. Then, if the user is done switching but asks for a new
+shell, we suppose that the user's intent is to open a new shell
+in the context that was active when he started switching.")
+
 ;;;###autoload
 (defvar shell-switcher-mode-map
   (let ((map (make-sparse-keymap)))
@@ -156,7 +163,8 @@ in the current window. If OTHER-WINDOW is t, change another
 window.
 "
   (if (y-or-n-p "No active shell buffer, create new one? ")
-      (sswitcher--new-shell other-window)))
+      (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
+	(sswitcher--new-shell other-window))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
@@ -241,6 +249,8 @@ If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer and
 display it in the current window (if OTHER-WINDOW is nil, the
 default) or the other window (if OTHER-WINDOW is t)."
+  (unless sswitcher--starting-default-directory
+    (setq sswitcher--starting-default-directory default-directory))
   (if (or (not (sswitcher--shell-exist-p))
 	  (and (= (rswitcher-length sswitcher-ring) 1)
 	       (sswitcher--in-shell-buffer-p)))
