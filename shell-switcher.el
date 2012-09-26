@@ -164,7 +164,8 @@ window.
 "
   (if (y-or-n-p "No active shell buffer, create new one? ")
       (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
-	(sswitcher--new-shell other-window))))
+	(sswitcher--new-shell other-window)
+	(setq sswitcher--starting-default-directory nil))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
