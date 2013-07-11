@@ -160,8 +160,7 @@ what kind of shell to create."
 If user answers positively, a new shell buffer is created. If
 OTHER-WINDOW is nil (the default), the shell buffer is displayed
 in the current window. If OTHER-WINDOW is t, change another
-window.
-"
+window."
   (if (y-or-n-p "No active shell buffer, create new one? ")
       (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
 	(sswitcher--new-shell other-window)
