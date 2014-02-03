@@ -21,5 +21,4 @@ before_script:
   - make env
 
 script:
-  - make info
   - make check
