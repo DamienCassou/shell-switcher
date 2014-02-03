@@ -6,11 +6,11 @@
   (lambda ()
     (delete-other-windows)))
 
-(And "^I setup y-or-n-p to always answer \\(yes\\|no\\)$"
+(And "^I setup y-or-n-p to always answer \\(t\\|nil\\)$"
      (lambda (answer)
        (lexical-let ((answer answer))
          (fset 'y-or-n-p (lambda (prompt)
-                              (string= answer "yes"))))))
+                           (string= answer "t"))))))
 
 (And "^I setup a mock shell function$"
   (lambda ()

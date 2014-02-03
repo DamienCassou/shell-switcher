@@ -7,7 +7,7 @@ Feature: Shell-switcher works
     Given I setup shell-switcher-mode
     And I setup a mock shell function
     And I kill all shell-switcher buffers
-    And I setup y-or-n-p to always answer yes
+    And I setup y-or-n-p to always answer t
 
   Scenario: C-' opens the first 2 buffers (one after the other) and switch between them
     When I am in buffer "*scratch*"
