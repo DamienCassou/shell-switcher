@@ -1,6 +1,6 @@
 ;;; rswitcher.el --- Structure and functions for switching elements
 ;;
-;; Copyright (C) 2012 Damien Cassou
+;; Copyright (C) 2012-2013 Damien Cassou
 ;;
 ;; Author: Damien Cassou <damien.cassou@gmail.com>
 ;; GIT: https://github.com/DamienCassou/shell-switcher
