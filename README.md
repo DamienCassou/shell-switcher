@@ -5,9 +5,11 @@ Emacs shell-switcher
 
 shell-switcher provides fast switching between shell buffers.
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=jNSrrQwcCr4
-" target="_blank"><img src="http://img.youtube.com/vi/jNSrrQwcCr4/0.jpg" 
+<figure>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=jNSrrQwcCr4" target="_blank"><img src="http://img.youtube.com/vi/jNSrrQwcCr4/0.jpg" 
 alt="shell-switcher screencast" width="480" height="360" border="10" /></a>
+<figcaption>A shell-switcher <a href="http://www.youtube.com/watch?feature=player_embedded&v=jNSrrQwcCr4">screencast</a></ficaption>
+</figure>
 
 # Installation
 
