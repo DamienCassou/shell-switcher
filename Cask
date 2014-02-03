@@ -1,7 +1,7 @@
 (source melpa)
 (source org)
 
-(package-file "shell-switcher.el")
+(package "shell-switcher" "0.1.6" "Provide fast switching between shell buffers.")
 
 (development
  (depends-on "ert")
