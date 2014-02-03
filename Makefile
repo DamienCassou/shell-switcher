@@ -1,46 +1,100 @@
-# package.el multi-file package install
+CWD          = $(shell pwd)
+SCRIPT       = $(CWD)/script
+GIT_DIR      = $(CWD)/.git
+EMACS       ?= emacs
+EMACSFLAGS   = --batch -Q
+CASK         = cask
+VERSION     := $(shell EMACS=$(EMACS) $(CASK) version)
+PKG_DIR     := $(shell EMACS=$(EMACS) $(CASK) package-directory)
+USER_EMACS_D = ~/.emacs.d
+USER_INIT_EL = $(USER_EMACS_D)/init.el
+USER_ELPA_D  = $(USER_EMACS_D)/elpa
 
-# These are the variables that are specific to the package
-NAME=shell-switcher
-VERSION=0.1.5.1
-DOC="Easily switch between shell buffers, like with alt+tab."
-REQUIREMENTS=requirements.txt
-package_parts = rswitcher.el shell-switcher.el README.md COPYING AUTHORS
+SRCS         = $(filter-out flycheck_%, $(filter-out %-pkg.el, $(wildcard *.el)))
+TESTS        = $(filter-out %-pkg.el, $(wildcard test/*.el))
+OBJECTS      = $(SRCS:.el=.elc)
+PACKAGE_SRCS = $(SRCS) shell-switcher-pkg.el
+PACKAGE_TAR  = shell-switcher-$(VERSION).tar
 
-# Everything beyond here should be generic
-PACKAGE=$(NAME)-$(VERSION)
-TARBALL=$(PACKAGE).tar
+PRECOMMIT_SRC  = $(SCRIPT)/pre-commit.sh
+PRECOMMIT_HOOK = $(GIT_DIR)/hooks/pre-commit
 
-all: tarball
+.PHONY: all
+all : env compile dist
 
-# Install the tarball in a test package store
-test: tarball
-	emacs -Q --batch -l ./packagedir.el -- $(TARBALL)
+# Configure tooling and environment.
+.PHONY: env
+env : packages $(PRECOMMIT_HOOK)
 
-# Install the tarball in the user's emacs
-install: tarball
-	emacs --batch -l ~/.emacs.d/init.el -l ./build.el -- $(TARBALL)
+# Run tests before committing.
+$(PRECOMMIT_HOOK) :
+	ln -s $(PRECOMMIT_SRC) $(PRECOMMIT_HOOK)
+	chmod +x $(PRECOMMIT_HOOK)
 
-clean:
-	rm -rf .elpa
-	rm -rf $(TARBALL)
-	rm -rf $(PACKAGE)
-	rm -rf $(NAME)-pkg.el
+# Byte-compile elisp files.
+.PHONY: compile
+compile : $(OBJECTS)
 
-tarball: $(TARBALL)
+# Run ert tests.
+.PHONY: check
+check : compile
+	$(CASK) exec $(EMACS) $(EMACSFLAGS)  \
+	$(patsubst %,-l % , $(SRCS))\
+	$(patsubst %,-l % , $(TESTS))\
+	-f ert-run-tests-batch-and-exit
 
-$(TARBALL): $(PACKAGE) $(PACKAGE)/$(NAME)-pkg.el
-	tar cf $@ $<
+# Install packages with Cask.
+$(PKG_DIR) : Cask
+	$(CASK)
+	$(CASK) install
+	touch $(PKG_DIR)
 
-$(PACKAGE): $(package_parts)
-	mkdir $@
-	cp $(package_parts) $@
+# Create a tar that can be installed by package.el
+.PHONY: dist
+dist : $(PACKAGE_TAR)
+$(PACKAGE_TAR) : $(PACKAGE_SRCS)
+	rm -rf shell-switcher-$(VERSION)
+	mkdir -p shell-switcher-$(VERSION)
+	cp -f $(PACKAGE_SRCS) shell-switcher-$(VERSION)
+	tar cf $(PACKAGE_TAR) shell-switcher-$(VERSION)
+	rm -rf shell-switcher-$(VERSION)
 
-$(PACKAGE)/$(NAME)-pkg.el:
-	echo "(define-package \"$(NAME)\" \"$(VERSION)\" \"$(DOC)\" `cat $(REQUIREMENTS)`)" > $@
+# Install elisp packages with cask.
+.PHONY: packages
+packages : $(PKG_DIR)
 
-run-tests:
-	emacs -batch -l ert -l rswitcher.el -l rswitcher-test.el -f ert-run-tests-batch-and-exit
+# Install the package to the user's Emacs dir.
+.PHONY: install
+install : dist
+	$(EMACS) $(EMACSFLAGS) -l package \
+	-f package-initialize  --eval '(package-install-file "$(CWD)/$(PACKAGE_TAR)")'
 
+# Uninstall the package.
+.PHONY: uninstall
+uninstall :
+	rm -rf $(USER_ELPA_D)/shell-switcher-*
 
-# End
+# Restore to pristine state.
+.PHONY: clean-all
+clean-all : clean clean-pkgdir
+
+# Clean generated files.
+.PHONY: clean
+clean :
+	rm -f $(OBJECTS)
+	rm -rf shell-switcher-*.tar shell-switcher-pkg.el
+
+# Remove packages installed by Cask.
+.PHONY: clean-pkgdir
+clean-pkgdir :
+	rm -rf $(PKG_DIR)
+
+# Generate files.
+
+shell-switcher-pkg.el : Cask
+	$(CASK) package
+
+%.elc : %.el $(PKG_DIR)
+	$(CASK) exec $(EMACS) $(EMACSFLAGS) \
+	--eval '(setq package-user-dir "$(PKG_DIR)")' -f package-initialize -L . \
+	-f batch-byte-compile $<

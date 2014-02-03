@@ -1,4 +1,11 @@
+# Generated files
 *.elc
-/README.html
-shell-switcher-*/
-shell-switcher*.tar
+*-pkg.el
+*.tar
+TAGS
+doc/shell-switcher.texi
+doc/shell-switcher.info
+
+# Packages
+.cask
+elpa
