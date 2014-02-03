@@ -11,6 +11,7 @@
 
 (add-to-list 'load-path shell-switcher-root-path)
 
+(require 'cl)
 (require 'shell-switcher)
 (require 'espuds)
 (require 'ert)
