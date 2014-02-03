@@ -150,6 +150,11 @@ number of SWITCHER's elements minus 1."
 	;; we just removed the element that was most-recent
 	(rswitcher--reset-last-pos switcher))))
 
+(defun rswitcher-delete-all (switcher)
+  "Remove all elements from SWITCHER."
+  (while (not (rswitcher-empty-p switcher))
+    (rswitcher-delete-most-recent switcher)))
+
 (defun rswitcher-delete-most-recent (switcher)
   "Remove the most recent element from SWITCHER."
   (rswitcher--delete switcher (rswitcher--most-recent-pos switcher)))

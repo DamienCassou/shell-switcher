@@ -46,6 +46,16 @@
     (rswitcher-add s 'c)
     (should (equal 1 (rswitcher-length s)))))
 
+(ert-deftest rswitcher-test-delete-all ()
+  "rswitcher-delete-all removes all correctly"
+  (let ((s (rswitcher-make)))
+    (rswitcher-add s 'c)
+    (rswitcher-add s 'b)
+    (rswitcher-add s 'a)
+    (should (not (rswitcher-empty-p s)))
+    (rswitcher-delete-all s)
+    (should (rswitcher-empty-p s))))
+
 (ert-deftest rswitcher-test-delete-head ()
   "rswitcher--delete removes head correctly"
   (let ((s (rswitcher-make)))

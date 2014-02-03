@@ -125,6 +125,12 @@ This function is to be used as value for
 	      (not (sswitcher--most-recent-shell-valid-p)))
     (rswitcher-delete-most-recent sswitcher-ring)))
 
+(defun shell-switcher-kill-all-shells ()
+  "Remove all shell buffers."
+  (while (not (rswitcher-empty-p sswitcher-ring))
+    (kill-buffer (rswitcher-most-recent sswitcher-ring))
+    (rswitcher-delete-most-recent sswitcher-ring)))
+
 (defun sswitcher--shell-exist-p ()
   "Check that there is at least one valid shell to switch to."
   (sswitcher--clean-buffers)
