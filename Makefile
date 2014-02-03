@@ -36,12 +36,17 @@ $(PRECOMMIT_HOOK) :
 compile : $(OBJECTS)
 
 # Run ert tests.
-.PHONY: check
-check : compile
+.PHONY: unit-tests ecukes-tests check
+unit-tests : compile
 	$(CASK) exec $(EMACS) $(EMACSFLAGS)  \
 	$(patsubst %,-l % , $(SRCS))\
 	$(patsubst %,-l % , $(TESTS))\
 	-f ert-run-tests-batch-and-exit
+
+ecukes-tests : compile
+	$(CASK) exec ecukes --script
+
+check : unit-tests ecukes-tests
 
 # Install packages with Cask.
 $(PKG_DIR) : Cask
