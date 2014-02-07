@@ -1,4 +1,4 @@
-;;; shell-switcher.el --- Provide fast switching between shell buffers
+;;; shell-switcher.el --- Provide fast switching between shell buffers  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2012-2013 Damien Cassou
 ;;
@@ -216,7 +216,6 @@ key of the most recent key sequence. See
 `shell-switcher-switch-buffer' for more information. When this
 key is pressed, calls `sswitcher-switch-partially'."
   (let* ((repeat-key (event-basic-type last-input-event))
-	 (repeat-key-str (format-kbd-macro (vector repeat-key)))
 	 (message (format "Type %s again to continue switching"
 			  (format-kbd-macro (vector repeat-key)))))
     (set-temporary-overlay-map

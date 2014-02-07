@@ -1,4 +1,4 @@
-;;; rswitcher.el --- Structure and functions for switching elements
+;;; rswitcher.el --- Structure and functions for switching elements  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2012-2013 Damien Cassou
 ;;
