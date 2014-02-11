@@ -55,9 +55,18 @@
 (defcustom shell-switcher-new-shell-function 'shell-switcher-make-eshell
   "This variable references a function used to create new shells.
 The function must take 0 arguments and return a newly created
-shell buffer. `shell-switcher-make-shell' and
-`shell-switcher-make-eshell' are possible functions."
+shell buffer. `shell-switcher-make-shell',
+`shell-switcher-make-eshell' and `shell-switcher-make-ansi-term'
+are possible functions."
 
+  :group 'shell-switcher)
+
+;;;###autoload
+(defcustom shell-switcher-ansi-term-shell ""
+  "If non-empty use this shell with `ansi-term'.
+Otherwise the shell will be chosen based on the environment with
+a fallback to /bin/sh"
+  :type 'string
   :group 'shell-switcher)
 
 (defvar sswitcher--starting-default-directory nil
@@ -109,6 +118,28 @@ This function is to be used as value for
 This function is to be used as value for
 `shell-switcher-new-shell-function'."
   (eshell t))
+
+(defun shell-switcher-make-ansi-term ()
+  "Ensure the creation of a new `ansi-term'.
+Will use the shell defined in `shell-switcher-ansi-term-shell' or
+get it from the environment, falling back to /bin/sh. Installs a
+sentinel to detect when the user exits the shell and kills the
+buffer automatically. This function is to be used as value for
+`shell-switcher-new-shell-function'."
+  (let ((shell (or (unless (string= "" shell-switcher-ansi-term-shell)
+                     shell-switcher-ansi-term-shell)
+                   (getenv "ESHELL")
+                   (getenv "SHELL")
+                   "/bin/sh")))
+    (unless (file-executable-p shell)
+      (error "`shell-swicher' tried to use the shell `%s' for `ansi-term' but it is not executable." shell))
+    (prog1
+        (ansi-term shell)
+      (when (ignore-errors (get-buffer-process (current-buffer)))
+        (set-process-sentinel (get-buffer-process (current-buffer))
+                              (lambda (proc change)
+                                (when (string-match "\\(finished\\|exited\\)" change)
+                                  (kill-buffer (process-buffer proc)))))))))
 
 (defun sswitcher--most-recent ()
   "Return the most recently accessed shell."
