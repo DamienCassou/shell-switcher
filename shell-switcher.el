@@ -60,6 +60,14 @@ shell buffer. `shell-switcher-make-shell' and
 
   :group 'shell-switcher)
 
+;;;###autoload
+(defcustom shell-switcher-ask-before-creating-new nil
+  "If non-nil ask the user before creating a new shell buffer.
+A new shell buffer is automatically created if there are no
+buffers to switch to and this variable is set to nil."
+  :type 'boolean
+  :group 'shell-switcher)
+
 (defvar sswitcher--starting-default-directory nil
   "Backup `default-directory' for the next shell creation.
 This variable is set to `default-directory' when starting to
@@ -161,15 +169,17 @@ what kind of shell to create."
   (sswitcher--display-shell-buffer other-window))
 
 (defun sswitcher--no-more-shell-buffers (&optional other-window)
-  "Propose to create a new shell as there is no more to switch to.
-If user answers positively, a new shell buffer is created. If
-OTHER-WINDOW is nil (the default), the shell buffer is displayed
-in the current window. If OTHER-WINDOW is t, change another
-window."
-  (if (y-or-n-p "No active shell buffer, create new one? ")
-      (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
-	(sswitcher--new-shell other-window)
-	(setq sswitcher--starting-default-directory nil))))
+  "Create a new shell as there is no more to switch to.
+If `shell-switcher-ask-before-creating-new' is non-nil, ask the
+user first. If the answer is positive or the user was not asked,
+a new shell buffer is created. If OTHER-WINDOW is nil (the
+default), the shell buffer is displayed in the current window. If
+OTHER-WINDOW is t, change another window."
+  (when (or (not shell-switcher-ask-before-creating-new)
+            (y-or-n-p "No active shell buffer, create new one? "))
+    (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
+      (sswitcher--new-shell other-window)
+      (setq sswitcher--starting-default-directory nil))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
