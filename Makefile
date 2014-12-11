@@ -10,7 +10,7 @@ USER_EMACS_D = ~/.emacs.d
 USER_INIT_EL = $(USER_EMACS_D)/init.el
 USER_ELPA_D  = $(USER_EMACS_D)/elpa
 
-SRCS         = $(filter-out flycheck_%, $(filter-out %-pkg.el, $(wildcard *.el)))
+SRCS         = rswitcher.el shell-switcher.el
 TESTS        = $(filter-out %-pkg.el, $(wildcard test/*.el))
 OBJECTS      = $(SRCS:.el=.elc)
 PACKAGE_SRCS = $(SRCS) shell-switcher-pkg.el
