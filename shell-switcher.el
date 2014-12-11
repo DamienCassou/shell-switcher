@@ -44,7 +44,7 @@
 
 (require 'rswitcher)
 
-(defconst sswitcher-ring (rswitcher-make))
+(defconst sswitcher--ring (rswitcher-make))
 
 (defgroup shell-switcher nil
   "Handling multiple shells"
@@ -151,7 +151,7 @@ buffer automatically. This function is to be used as value for
 
 (defun sswitcher--most-recent ()
   "Return the most recently accessed shell."
-  (rswitcher-most-recent sswitcher-ring))
+  (rswitcher-most-recent sswitcher--ring))
 
 (defun sswitcher--most-recent-shell-valid-p ()
   "Check that the most recently created shell can still be accessed."
@@ -159,24 +159,24 @@ buffer automatically. This function is to be used as value for
 
 (defun sswitcher--clean-buffers ()
   "Remove all shell buffers until we find a valid one."
-  (while (and (not (rswitcher-empty-p sswitcher-ring))
+  (while (and (not (rswitcher-empty-p sswitcher--ring))
 	      (not (sswitcher--most-recent-shell-valid-p)))
-    (rswitcher-delete-most-recent sswitcher-ring)))
+    (rswitcher-delete-most-recent sswitcher--ring)))
 
 (defun shell-switcher-kill-all-shells ()
   "Remove all shell buffers."
-  (while (not (rswitcher-empty-p sswitcher-ring))
-    (kill-buffer (rswitcher-most-recent sswitcher-ring))
-    (rswitcher-delete-most-recent sswitcher-ring)))
+  (while (not (rswitcher-empty-p sswitcher--ring))
+    (kill-buffer (rswitcher-most-recent sswitcher--ring))
+    (rswitcher-delete-most-recent sswitcher--ring)))
 
 (defun sswitcher--shell-exist-p ()
   "Check that there is at least one valid shell to switch to."
   (sswitcher--clean-buffers)
-  (not (rswitcher-empty-p sswitcher-ring)))
+  (not (rswitcher-empty-p sswitcher--ring)))
 
 (defun sswitcher--in-shell-buffer-p ()
   "Check that the current buffer is a shell buffer."
-  (rswitcher-memq sswitcher-ring (current-buffer)))
+  (rswitcher-memq sswitcher--ring (current-buffer)))
 
 (defun shell-switcher-manually-register-shell ()
   "Register the current buffer in shell-switcher.
@@ -184,7 +184,7 @@ Must be executed manually or from a shell mode hook when the
 current buffer is a shell that has been created without using a
 shell-switcher function."
   (interactive)
-  (rswitcher-add sswitcher-ring (current-buffer)))
+  (rswitcher-add sswitcher--ring (current-buffer)))
 
 (defun sswitcher--new-shell (&optional other-window)
   "Create and display a new shell.
@@ -195,7 +195,7 @@ another window.
 This function uses `shell-switcher-new-shell-function' to decide
 what kind of shell to create."
   (save-window-excursion
-    (rswitcher-add sswitcher-ring
+    (rswitcher-add sswitcher--ring
 		   (funcall shell-switcher-new-shell-function)))
   (sswitcher--display-shell-buffer other-window))
 
@@ -255,7 +255,7 @@ remove the keymap depends on user input and KEEP-PRED:
 The key to be pressed to continue switching buffers is the last
 key of the most recent key sequence. See
 `shell-switcher-switch-buffer' for more information. When this
-key is pressed, calls `sswitcher-switch-partially'."
+key is pressed, calls `sswitcher--switch-partially'."
   (let* ((repeat-key (event-basic-type last-input-event))
 	 (message (format "Type %s again to continue switching"
 			  (format-kbd-macro (vector repeat-key)))))
@@ -263,7 +263,7 @@ key is pressed, calls `sswitcher-switch-partially'."
      (let ((map (make-sparse-keymap)))
        (define-key map (vector repeat-key)
 	 `(lambda () (interactive)
-	    (sswitcher-switch-partially)
+	    (sswitcher--switch-partially)
 	    (message ,message)))
        map) t)
     (message message)))
@@ -278,14 +278,14 @@ If OTHER-WINDOW is t, change another window."
 	(switch-to-buffer (sswitcher--most-recent) t))
     (message "No shell buffer to display")))
 
-(defun sswitcher-switch-buffer (&optional other-window)
+(defun sswitcher--switch-buffer (&optional other-window)
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
 current one. Pressing the last key of the key sequence that call
 this command will result in switching to the next shell buffer :
 for example, if `C-'' is bound to this command, repeatedly
 pressing `'' (quote) will let the user visit all shell
-buffers (this is actually done by `sswitcher-switch-partially'.
+buffers (this is actually done by `sswitcher--switch-partially'.
 If OTHER-WINDOW is nil (the default), the current window is used
 to display the shell buffer. If OTHER-WINDOW is t, the buffer is
 displayed in the other window.
@@ -296,11 +296,11 @@ display it in the current window (if OTHER-WINDOW is nil, the
 default) or the other window (if OTHER-WINDOW is t)."
   (setq sswitcher--starting-default-directory default-directory)
   (if (or (not (sswitcher--shell-exist-p))
-	  (and (= (rswitcher-length sswitcher-ring) 1)
+	  (and (= (rswitcher-length sswitcher--ring) 1)
 	       (sswitcher--in-shell-buffer-p)))
       (sswitcher--no-more-shell-buffers other-window)
     (when (sswitcher--in-shell-buffer-p)
-      (rswitcher-switch-full sswitcher-ring))
+      (rswitcher-switch-full sswitcher--ring))
     (sswitcher--display-shell-buffer other-window)
     (sswitcher--prepare-for-fast-key)))
 
@@ -312,23 +312,23 @@ current one. Pressing the last key of the key sequence that call
 this command will result in switching to the next shell buffer :
 for example, if `C-'' is bound to this command, repeatedly
 pressing `'' (quote) will let the user visit all shell
-buffers (this is actually done by `sswitcher-switch-partially'.
+buffers (this is actually done by `sswitcher--switch-partially'.
 
 If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer."
   (interactive)
-  (sswitcher-switch-buffer))
+  (sswitcher--switch-buffer))
 
-(defun sswitcher-switch-partially ()
+(defun sswitcher--switch-partially ()
   "Switch to the next most recently accessed buffer.
 
 This function is indirectly called by
 `shell-switcher-switch-buffer' after pressingthe last key of the
 most recent key sequence."
   (sswitcher--clean-buffers)
-  (if (< (rswitcher-length sswitcher-ring) 2)
+  (if (< (rswitcher-length sswitcher--ring) 2)
       (sswitcher--no-more-shell-buffers)
-    (rswitcher-switch-partial sswitcher-ring)
+    (rswitcher-switch-partial sswitcher--ring)
     (sswitcher--display-shell-buffer)))
 
 ;;;###autoload
@@ -337,7 +337,7 @@ most recent key sequence."
 Same as `shell-switcher-switch-buffer' but change another
 window."
   (interactive)
-  (sswitcher-switch-buffer t))
+  (sswitcher--switch-buffer t))
 
 ;;;###autoload
 (defun shell-switcher-new-shell ()
