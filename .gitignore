@@ -1,6 +1,5 @@
 # Generated files
 *.elc
-*-pkg.el
 *.tar
 TAGS
 doc/shell-switcher.texi
