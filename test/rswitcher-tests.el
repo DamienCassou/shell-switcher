@@ -28,6 +28,9 @@
 (require 'rswitcher)
 (require 'ert)
 
+(when (require 'undercover nil t)
+  (undercover "../rswitcher.el"))
+
 (ert-deftest rswitcher-test-add-increment-length ()
   "rswitcher-add increases length"
   (let ((s (rswitcher-make)))
