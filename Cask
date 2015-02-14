@@ -10,4 +10,4 @@
  (depends-on "cl-lib")
  (depends-on "ecukes")
  (depends-on "espuds")
- )
+ (depends-on "undercover"))
