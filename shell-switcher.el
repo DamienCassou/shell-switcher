@@ -268,7 +268,7 @@ key is pressed, calls `sswitcher--switch-partially'."
 	 `(lambda () (interactive)
 	    (shell-switcher--switch-partially)
 	    (message ,message)))
-       map) t)
+       map) t (lambda () (switch-to-buffer (current-buffer))))
     (message message)))
 
 (defun -display-shell-buffer (&optional other-window)
@@ -277,8 +277,8 @@ If OTHER-WINDOW is nil (the default), change the current window.
 If OTHER-WINDOW is t, change another window."
   (if (-shell-exist-p)
       (if other-window
-	  (switch-to-buffer-other-window (-most-recent) t)
-	(switch-to-buffer (-most-recent) t))
+          (switch-to-buffer-other-window (-most-recent) t)
+        (switch-to-buffer (-most-recent) (> (rswitcher-length -ring) 1)))
     (message "No shell buffer to display")))
 
 (defun -switch-buffer (&optional other-window)
