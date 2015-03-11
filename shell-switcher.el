@@ -305,7 +305,8 @@ default) or the other window (if OTHER-WINDOW is t)."
     (when (-in-shell-buffer-p)
       (rswitcher-switch-full -ring))
     (-display-shell-buffer other-window)
-    (-prepare-for-fast-key)))
+    (if (> (rswitcher-length -ring) 1)
+        (-prepare-for-fast-key))))
 
 :autoload
 (defun switch-buffer ()
