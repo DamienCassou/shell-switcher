@@ -37,7 +37,12 @@ with:
    (setq shell-switcher-mode t)
 
 You have to customize `shell-switcher-new-shell-function` if eshell is
-not your shell of choice.
+not your shell of choice. For example, if you wanted to use Powershell: 
+
+    (defun make-powershell ()
+      "Create a new `powershell'."
+      (powershell (generate-new-buffer-name "*PowerShell*")))
+    (setq-default shell-switcher-new-shell-function 'make-powershell)
 
 # Usage
 
@@ -46,7 +51,7 @@ The standard key bindings are:
 - `C-'` opens the first 2 buffers (one after the other) and switch between them
 - Repeating `'` continues switching after an initial `C-'`
 - `C-M-'` forces the creation of a new shell
-- `C-x 4 '` is similar to `C-'` but within another window
+- `C-x 4 '` is similar to `C-'` but within another window. 
 
 You can change them by adapting and adding the following to your
 configuration file:
