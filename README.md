@@ -2,7 +2,6 @@ Emacs shell-switcher
 ==========
 
 [![Build Status](https://travis-ci.org/DamienCassou/shell-switcher.png?branch=master)](https://travis-ci.org/DamienCassou/shell-switcher)
-[![Coverage Status](https://coveralls.io/repos/DamienCassou/shell-switcher/badge.svg)](https://coveralls.io/r/DamienCassou/shell-switcher)
 
 shell-switcher provides fast switching between shell buffers.
 
