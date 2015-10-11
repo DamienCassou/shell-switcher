@@ -36,12 +36,7 @@
 ;;
 ;;; Code:
 
-
-(require 'names)
-
-(define-namespace rswitcher-
-
-(defun make ()
+(defun rswitcher-make ()
   "Return a new switcher.
 The switcher is internally implemented as a cons. The `car' of
 this cons contains the list of elements in the rswitcher (see
@@ -49,14 +44,14 @@ this cons contains the list of elements in the rswitcher (see
 most-recent element (see `rswitcher--last-pos')."
   (cons nil nil))
 
-(defun -elements (switcher)
+(defun rswitcher--elements (switcher)
   "Return the list of elements in SWITCHER.
 See `rswitcher-length', `rswitcher-empty-p', `rswitcher-memq',
 `rswitcher-add', and `rswitcher-delete-most-recent' for ways to query
 and manipulate SWITCHER."
   (car switcher))
 
-(defun -last-pos (switcher)
+(defun rswitcher--last-pos (switcher)
   "Return the index of SWITCHER's most-recent element.
 A value of 0 means the first element of SWITCHER's elements. This
 function returns nil in all cases except after a
@@ -69,130 +64,130 @@ value returned by this function by using
 `rswitcher--set-last-pos'."
   (cdr switcher))
 
-(defun -set-last-pos (switcher last-pos)
+(defun rswitcher--set-last-pos (switcher last-pos)
   "Set the last pos field of SWITCHER to be LAST-POS.
 
 A value of 0 means the first element of SWITCHER's elements."
   (setcdr switcher last-pos))
 
-(defun -increment-last-pos (switcher)
+(defun rswitcher--increment-last-pos (switcher)
   "Add 1 (modulo SWITCHER's number of elements) to LAST-POS field."
-  (let ((last-pos (-last-pos switcher)))
-    (-set-last-pos switcher
-                             (% (1+ last-pos)
-                                (length switcher)))))
+  (let ((last-pos (rswitcher--last-pos switcher)))
+    (rswitcher--set-last-pos switcher
+				 (% (1+ last-pos)
+				    (rswitcher-length switcher)))))
 
-(defun -reset-last-pos (switcher)
+(defun rswitcher--reset-last-pos (switcher)
   "Set last pos field of SWITCHER to nil.
 See `rswitcher--last-pos'."
-  (-set-last-pos switcher nil))
+  (rswitcher--set-last-pos switcher nil))
 
-(defun length (switcher)
+(defun rswitcher-length (switcher)
   "Return the number of elements in SWITCHER.
 See `rswitcher--elements'."
-  (::length (-elements switcher)))
+  (length (rswitcher--elements switcher)))
 
-(defun empty-p (switcher)
+(defun rswitcher-empty-p (switcher)
   "Check if there is no more elements in SWITCHER."
-  (zerop (length switcher)))
+  (zerop (rswitcher-length switcher)))
 
-(defun -most-recent-pos (switcher)
+(defun rswitcher--most-recent-pos (switcher)
   "Return the index of the most recent element.
 The most recent element is always the first of SWITCHER's
 elements (in which case the function returns 0) except after a
 call to `rswitcher-switch-partial' in which case the most recent
 element is pointed to by the last pos field of SWITCHER."
-  (or (-last-pos switcher) 0))
+  (or (rswitcher--last-pos switcher) 0))
 
-(defun most-recent (switcher)
+(defun rswitcher-most-recent (switcher)
   "Return the most recently accessed element in SWITCHER."
-  (elt (-elements switcher) (-most-recent-pos switcher)))
+  (elt (rswitcher--elements switcher) (rswitcher--most-recent-pos switcher)))
 
-(defun -push (switcher elt)
+(defun rswitcher--push (switcher elt)
   "Update SWITCHER's elements by adding ELT in front."
-  (unless (member elt (-elements switcher))
-    (setcar switcher (cons elt (-elements switcher)))))
+  (unless (member elt (rswitcher--elements switcher))
+    (setcar switcher (cons elt (rswitcher--elements switcher)))))
 
-(defun make-most-recent-elt-the-first (switcher)
+(defun rswitcher-make-most-recent-elt-the-first (switcher)
   "Move most recent element to the beginning of SWITCHER's elements."
-  (unless (zerop (-most-recent-pos switcher))
-    (-push
+  (unless (zerop (rswitcher--most-recent-pos switcher))
+    (rswitcher--push
      switcher
-     (-delete switcher (-most-recent-pos switcher)))))
+     (rswitcher--delete switcher (rswitcher--most-recent-pos switcher)))))
 
-(defun add (switcher elt)
+(defun rswitcher-add (switcher elt)
   "Reorganize SWITCHER with most-recent element on front and push ELT."
-  (make-most-recent-elt-the-first switcher)
-  (-push switcher elt)
-  (-reset-last-pos switcher))
+  (rswitcher-make-most-recent-elt-the-first switcher)
+  (rswitcher--push switcher elt)
+  (rswitcher--reset-last-pos switcher))
 
-(defun -pop (switcher)
+(defun rswitcher--pop (switcher)
   "Remove and return the first element of SWITCHER's elements."
-  (let ((elements (-elements switcher)))
+  (let ((elements (rswitcher--elements switcher)))
     (prog1
-        (car elements)
-      (setcar switcher (cdr elements)))))
+      (car elements)
+    (setcar switcher (cdr elements)))))
 
-(defun memq (switcher elt)
+(defun rswitcher-memq (switcher elt)
   "Check if SWITCHER's elements include ELT. Comparison done with `eq'."
-  (::memq elt (-elements switcher)))
+  (memq elt (rswitcher--elements switcher)))
 
-(defun -delete (switcher pos)
+(defun rswitcher--delete (switcher pos)
   "Delete and return the element in SWITCHER at position POS.
 
 This function only accepts valid values for POS between 0 and the
 number of SWITCHER's elements minus 1."
   (prog1
       ;; return the deleted element
-      (elt (-elements switcher) pos)
+      (elt (rswitcher--elements switcher) pos)
     (if (zerop pos)
-	(-pop switcher)
-      (let ((tail (nthcdr (1+ pos) (-elements switcher)))
-	    (head (nthcdr (1- pos) (-elements switcher))))
+	(rswitcher--pop switcher)
+      (let ((tail (nthcdr (1+ pos) (rswitcher--elements switcher)))
+	    (head (nthcdr (1- pos) (rswitcher--elements switcher))))
 	(setcdr head tail)))
-    (if (= pos (-most-recent-pos switcher))
+    (if (= pos (rswitcher--most-recent-pos switcher))
 	;; we just removed the element that was most-recent
-	(-reset-last-pos switcher))))
+	(rswitcher--reset-last-pos switcher))))
 
-(defun delete-all (switcher)
+(defun rswitcher-delete-all (switcher)
   "Remove all elements from SWITCHER."
-  (while (not (empty-p switcher))
-    (delete-most-recent switcher)))
+  (while (not (rswitcher-empty-p switcher))
+    (rswitcher-delete-most-recent switcher)))
 
-(defun delete-most-recent (switcher)
+(defun rswitcher-delete-most-recent (switcher)
   "Remove the most recent element from SWITCHER."
-  (-delete switcher (-most-recent-pos switcher)))
+  (rswitcher--delete switcher (rswitcher--most-recent-pos switcher)))
 
-(defun -swap-first-two-elts (switcher)
+(defun rswitcher--swap-first-two-elts (switcher)
   "Reorganize SWITCHER by swapping first and second elements."
-  (let ((first (-pop switcher))
-	(new (-pop switcher)))
-    (-push switcher first)
-    (-push switcher new)))
+  (let ((first (rswitcher--pop switcher))
+	(new (rswitcher--pop switcher)))
+    (rswitcher--push switcher first)
+    (rswitcher--push switcher new)))
 
-(defun switch-full (switcher)
+(defun rswitcher-switch-full (switcher)
   "Select the next most recent element in SWITCHER.
 This function is similar to pressing and releasing ALT+TAB in
 standard window managers. Repeatedly calling this function will
 always select the two most recent elements alternatively."
-  (when (>= (length switcher) 2)
-    (make-most-recent-elt-the-first switcher)
-    (-swap-first-two-elts switcher)
-    (-reset-last-pos switcher)))
+  (when (>= (rswitcher-length switcher) 2)
+    (rswitcher-make-most-recent-elt-the-first switcher)
+    (rswitcher--swap-first-two-elts switcher)
+    (rswitcher--reset-last-pos switcher)))
 
-(defun switch-partial (switcher)
+(defun rswitcher-switch-partial (switcher)
   "Continue switching after 1 full switch and many partial switches.
 This function is similar to pressing TAB after pressing ALT+TAB.
 Repeatedly calling this function will alternatively select all
 elements of SWITCHER, most recent elements first."
-  (when (>= (length switcher) 2)
-    (if (-last-pos switcher)
-	(-increment-last-pos switcher)
+  (when (>= (rswitcher-length switcher) 2)
+    (if (rswitcher--last-pos switcher)
+	(rswitcher--increment-last-pos switcher)
       ;; Reverse swap done in previous execution of
-      ;; `switch-full'
-      (-swap-first-two-elts switcher)
-      (-set-last-pos switcher
-                     (if (> (length switcher) 2) 2 0))))))
+      ;; `rswitcher-switch-full'
+      (rswitcher--swap-first-two-elts switcher)
+      (rswitcher--set-last-pos switcher
+	    (if (> (rswitcher-length switcher) 2) 2 0)))))
 
 (provide 'rswitcher)
 
