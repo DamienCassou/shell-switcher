@@ -44,18 +44,15 @@
 
 (require 'rswitcher)
 
-;;;###autoload
-(define-namespace shell-switcher-
-
-(defconst -ring (rswitcher-make))
+(defconst sswitcher--ring (rswitcher-make))
 
 (defgroup shell-switcher nil
   "Handling multiple shells"
   :group 'extensions
   :group 'convenience)
 
-:autoload
-(defcustom new-shell-function #'make-eshell
+;;;###autoload
+(defcustom shell-switcher-new-shell-function 'shell-switcher-make-eshell
   "This variable references a function used to create new shells.
 The function must take 0 arguments and return a newly created
 shell buffer. `shell-switcher-make-shell',
@@ -64,40 +61,40 @@ are possible functions."
 
   :group 'shell-switcher)
 
-:autoload
-(defcustom ask-before-creating-new nil
+;;;###autoload
+(defcustom shell-switcher-ask-before-creating-new nil
   "If non-nil ask the user before creating a new shell buffer.
 A new shell buffer is automatically created if there are no
 buffers to switch to and this variable is set to nil."
   :type 'boolean
   :group 'shell-switcher)
 
-:autoload
-(defcustom ansi-term-shell ""
+;;;###autoload
+(defcustom shell-switcher-ansi-term-shell ""
   "If non-empty use this shell with `ansi-term'.
 Otherwise the shell will be chosen based on the environment with
 a fallback to /bin/sh"
   :type 'string
   :group 'shell-switcher)
 
-(defvar -starting-default-directory nil
+(defvar sswitcher--starting-default-directory nil
   "Backup `default-directory' for the next shell creation.
 This variable is set to `default-directory' when starting to
 switch. Then, if the user is done switching but asks for a new
 shell, we suppose that the user's intent is to open a new shell
 in the context that was active when he started switching.")
 
-:autoload
-(defvar mode-map
+;;;###autoload
+(defvar shell-switcher-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-'") #'switch-buffer)
-    (define-key map (kbd "C-x 4 '") #'switch-buffer-other-window)
-    (define-key map (kbd "C-M-'") #'new-shell)
+    (define-key map (kbd "C-'") 'shell-switcher-switch-buffer)
+    (define-key map (kbd "C-x 4 '") 'shell-switcher-switch-buffer-other-window)
+    (define-key map (kbd "C-M-'") 'shell-switcher-new-shell)
     map)
-  "Keymap to use in shell-switcher mode.")
+ "Keymap to use in shell-switcher mode.")
 
-:autoload
-(define-minor-mode mode
+;;;###autoload
+(define-minor-mode shell-switcher-mode
   "Toggle shell-switcher mode.
 Interactively with no argument, this command toggles the mode. A
 positive prefix argument enables the mode, any other prefix
@@ -116,29 +113,29 @@ see commands \\[shell-switcher-switch-buffer-other-window] and
   :init-value nil
   ;; nothing in the mode line:
   :lighter nil
-  :keymap mode-map)
+  :keymap shell-switcher-mode-map)
 
-(defun make-shell ()
+(defun shell-switcher-make-shell ()
   "Ensure the creation of a new `shell'.
 This function is to be used as value for
 `shell-switcher-new-shell-function'."
   (shell (generate-new-buffer-name "*shell*")))
 
-(defun make-eshell ()
+(defun shell-switcher-make-eshell ()
   "Ensure the creation of a new `eshell'.
 This function is to be used as value for
 `shell-switcher-new-shell-function'."
   (eshell t))
 
-(defun make-ansi-term ()
+(defun shell-switcher-make-ansi-term ()
   "Ensure the creation of a new `ansi-term'.
 Will use the shell defined in `shell-switcher-ansi-term-shell' or
 get it from the environment, falling back to /bin/sh. Installs a
 sentinel to detect when the user exits the shell and kills the
 buffer automatically. This function is to be used as value for
 `shell-switcher-new-shell-function'."
-  (let ((shell (or (unless (string= "" ansi-term-shell)
-                     ansi-term-shell)
+  (let ((shell (or (unless (string= "" shell-switcher-ansi-term-shell)
+                     shell-switcher-ansi-term-shell)
                    (getenv "ESHELL")
                    (getenv "SHELL")
                    "/bin/sh")))
@@ -152,44 +149,44 @@ buffer automatically. This function is to be used as value for
                                 (when (string-match "\\(finished\\|exited\\)" change)
                                   (kill-buffer (process-buffer proc)))))))))
 
-(defun -most-recent ()
+(defun sswitcher--most-recent ()
   "Return the most recently accessed shell."
-  (rswitcher-most-recent -ring))
+  (rswitcher-most-recent sswitcher--ring))
 
-(defun -most-recent-shell-valid-p ()
+(defun sswitcher--most-recent-shell-valid-p ()
   "Check that the most recently created shell can still be accessed."
-  (buffer-live-p (-most-recent)))
+  (buffer-live-p (sswitcher--most-recent)))
 
-(defun -clean-buffers ()
+(defun sswitcher--clean-buffers ()
   "Remove all shell buffers until we find a valid one."
-  (while (and (not (rswitcher-empty-p -ring))
-	      (not (-most-recent-shell-valid-p)))
-    (rswitcher-delete-most-recent -ring)))
+  (while (and (not (rswitcher-empty-p sswitcher--ring))
+	      (not (sswitcher--most-recent-shell-valid-p)))
+    (rswitcher-delete-most-recent sswitcher--ring)))
 
-(defun kill-all-shells ()
+(defun shell-switcher-kill-all-shells ()
   "Remove all shell buffers."
-  (while (not (rswitcher-empty-p -ring))
-    (kill-buffer (rswitcher-most-recent -ring))
-    (rswitcher-delete-most-recent -ring)))
+  (while (not (rswitcher-empty-p sswitcher--ring))
+    (kill-buffer (rswitcher-most-recent sswitcher--ring))
+    (rswitcher-delete-most-recent sswitcher--ring)))
 
-(defun -shell-exist-p ()
+(defun sswitcher--shell-exist-p ()
   "Check that there is at least one valid shell to switch to."
-  (-clean-buffers)
-  (not (rswitcher-empty-p -ring)))
+  (sswitcher--clean-buffers)
+  (not (rswitcher-empty-p sswitcher--ring)))
 
-(defun -in-shell-buffer-p ()
+(defun sswitcher--in-shell-buffer-p ()
   "Check that the current buffer is a shell buffer."
-  (rswitcher-memq -ring (current-buffer)))
+  (rswitcher-memq sswitcher--ring (current-buffer)))
 
-(defun manually-register-shell ()
+(defun shell-switcher-manually-register-shell ()
   "Register the current buffer in shell-switcher.
 Must be executed manually or from a shell mode hook when the
 current buffer is a shell that has been created without using a
 shell-switcher function."
   (interactive)
-  (rswitcher-add -ring (current-buffer)))
+  (rswitcher-add sswitcher--ring (current-buffer)))
 
-(defun -new-shell (&optional other-window)
+(defun sswitcher--new-shell (&optional other-window)
   "Create and display a new shell.
 If OTHER-WINDOW is nil (the default), the new shell buffer is
 displayed in the current window. If OTHER-WINDOW is t, change
@@ -198,26 +195,26 @@ another window.
 This function uses `shell-switcher-new-shell-function' to decide
 what kind of shell to create."
   (save-window-excursion
-    (rswitcher-add -ring
-		   (funcall new-shell-function)))
-  (-display-shell-buffer other-window))
+    (rswitcher-add sswitcher--ring
+		   (funcall shell-switcher-new-shell-function)))
+  (sswitcher--display-shell-buffer other-window))
 
-(defun -no-more-shell-buffers (&optional other-window)
+(defun sswitcher--no-more-shell-buffers (&optional other-window)
   "Create a new shell as there is no more to switch to.
 If `shell-switcher-ask-before-creating-new' is non-nil, ask the
 user first. If the answer is positive or the user was not asked,
 a new shell buffer is created. If OTHER-WINDOW is nil (the
 default), the shell buffer is displayed in the current window. If
 OTHER-WINDOW is t, change another window."
-  (when (or (not ask-before-creating-new)
+  (when (or (not shell-switcher-ask-before-creating-new)
             (y-or-n-p "No active shell buffer, create new one? "))
-    (let ((default-directory (or -starting-default-directory default-directory)))
-      (-new-shell other-window)
-      (setq -starting-default-directory nil))))
+    (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
+      (sswitcher--new-shell other-window)
+      (setq sswitcher--starting-default-directory nil))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
-  (defun ::set-temporary-overlay-map (map &optional keep-pred)
+  (defun set-temporary-overlay-map (map &optional keep-pred)
     "Set a new keymap that will only exist for a short period of time.
 The new keymap to use must be given in the MAP variable. When to
 remove the keymap depends on user input and KEEP-PRED:
@@ -253,7 +250,7 @@ remove the keymap depends on user input and KEEP-PRED:
 
       (push alist emulation-mode-map-alists))))
 
-(defun -prepare-for-fast-key ()
+(defun sswitcher--prepare-for-fast-key ()
   "Set a keymap so that one can switch buffers by pressing 1 key.
 The key to be pressed to continue switching buffers is the last
 key of the most recent key sequence. See
@@ -266,22 +263,22 @@ key is pressed, calls `sswitcher--switch-partially'."
      (let ((map (make-sparse-keymap)))
        (define-key map (vector repeat-key)
 	 `(lambda () (interactive)
-	    (shell-switcher--switch-partially)
+	    (sswitcher--switch-partially)
 	    (message ,message)))
        map) t)
     (message message)))
 
-(defun -display-shell-buffer (&optional other-window)
+(defun sswitcher--display-shell-buffer (&optional other-window)
   "Display the most recently accessed shell buffer.
 If OTHER-WINDOW is nil (the default), change the current window.
 If OTHER-WINDOW is t, change another window."
-  (if (-shell-exist-p)
+  (if (sswitcher--shell-exist-p)
       (if other-window
-	  (switch-to-buffer-other-window (-most-recent) t)
-	(switch-to-buffer (-most-recent) t))
+	  (switch-to-buffer-other-window (sswitcher--most-recent) t)
+	(switch-to-buffer (sswitcher--most-recent) t))
     (message "No shell buffer to display")))
 
-(defun -switch-buffer (&optional other-window)
+(defun sswitcher--switch-buffer (&optional other-window)
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
 current one. Pressing the last key of the key sequence that call
@@ -297,18 +294,18 @@ If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer and
 display it in the current window (if OTHER-WINDOW is nil, the
 default) or the other window (if OTHER-WINDOW is t)."
-  (setq -starting-default-directory default-directory)
-  (if (or (not (-shell-exist-p))
-	  (and (= (rswitcher-length -ring) 1)
-	       (-in-shell-buffer-p)))
-      (-no-more-shell-buffers other-window)
-    (when (-in-shell-buffer-p)
-      (rswitcher-switch-full -ring))
-    (-display-shell-buffer other-window)
-    (-prepare-for-fast-key)))
+  (setq sswitcher--starting-default-directory default-directory)
+  (if (or (not (sswitcher--shell-exist-p))
+	  (and (= (rswitcher-length sswitcher--ring) 1)
+	       (sswitcher--in-shell-buffer-p)))
+      (sswitcher--no-more-shell-buffers other-window)
+    (when (sswitcher--in-shell-buffer-p)
+      (rswitcher-switch-full sswitcher--ring))
+    (sswitcher--display-shell-buffer other-window)
+    (sswitcher--prepare-for-fast-key)))
 
-:autoload
-(defun switch-buffer ()
+;;;###autoload
+(defun shell-switcher-switch-buffer ()
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
 current one. Pressing the last key of the key sequence that call
@@ -320,35 +317,34 @@ buffers (this is actually done by `sswitcher--switch-partially'.
 If there is no shell buffer or if the only shell buffer is the
 current buffer, propose the creation of a new shell buffer."
   (interactive)
-  (-switch-buffer))
+  (sswitcher--switch-buffer))
 
-(defun -switch-partially ()
+(defun sswitcher--switch-partially ()
   "Switch to the next most recently accessed buffer.
 
 This function is indirectly called by
 `shell-switcher-switch-buffer' after pressingthe last key of the
 most recent key sequence."
-  (-clean-buffers)
-  (if (< (rswitcher-length -ring) 2)
-      (-no-more-shell-buffers)
-    (rswitcher-switch-partial -ring)
-    (-display-shell-buffer)))
+  (sswitcher--clean-buffers)
+  (if (< (rswitcher-length sswitcher--ring) 2)
+      (sswitcher--no-more-shell-buffers)
+    (rswitcher-switch-partial sswitcher--ring)
+    (sswitcher--display-shell-buffer)))
 
-:autoload
-(defun switch-buffer-other-window ()
+;;;###autoload
+(defun shell-switcher-switch-buffer-other-window ()
   "Switch to the most recently accessed buffer in another window.
 Same as `shell-switcher-switch-buffer' but change another
 window."
   (interactive)
-  (-switch-buffer t))
+  (sswitcher--switch-buffer t))
 
-:autoload
-(defun new-shell ()
+;;;###autoload
+(defun shell-switcher-new-shell ()
   "Unconditionaly create and display a new shell buffer."
   (interactive)
-  (-new-shell)))
+  (sswitcher--new-shell))
 
 (provide 'shell-switcher)
 
 ;;; shell-switcher.el ends here
-
