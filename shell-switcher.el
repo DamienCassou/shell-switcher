@@ -323,7 +323,7 @@ current buffer, propose the creation of a new shell buffer."
   "Switch to the next most recently accessed buffer.
 
 This function is indirectly called by
-`shell-switcher-switch-buffer' after pressingthe last key of the
+`shell-switcher-switch-buffer' after pressing the last key of the
 most recent key sequence."
   (sswitcher--clean-buffers)
   (if (< (rswitcher-length sswitcher--ring) 2)
@@ -341,7 +341,7 @@ window."
 
 ;;;###autoload
 (defun shell-switcher-new-shell ()
-  "Unconditionaly create and display a new shell buffer."
+  "Unconditionally create and display a new shell buffer."
   (interactive)
   (sswitcher--new-shell))
 
