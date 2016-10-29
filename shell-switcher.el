@@ -55,9 +55,9 @@
 (defcustom shell-switcher-new-shell-function 'shell-switcher-make-eshell
   "This variable references a function used to create new shells.
 The function must take 0 arguments and return a newly created
-shell buffer. `shell-switcher-make-shell',
-`shell-switcher-make-eshell' and `shell-switcher-make-ansi-term'
-are possible functions."
+shell buffer.
+`shell-switcher-make-shell',`shell-switcher-make-eshell' and
+`shell-switcher-make-ansi-term' are possible functions."
 
   :group 'shell-switcher)
 
@@ -80,7 +80,7 @@ a fallback to /bin/sh"
 (defvar sswitcher--starting-default-directory nil
   "Backup `default-directory' for the next shell creation.
 This variable is set to `default-directory' when starting to
-switch. Then, if the user is done switching but asks for a new
+switch.  Then, if the user is done switching but asks for a new
 shell, we suppose that the user's intent is to open a new shell
 in the context that was active when he started switching.")
 
@@ -130,9 +130,9 @@ This function is to be used as value for
 (defun shell-switcher-make-ansi-term ()
   "Ensure the creation of a new `ansi-term'.
 Will use the shell defined in `shell-switcher-ansi-term-shell' or
-get it from the environment, falling back to /bin/sh. Installs a
+get it from the environment, falling back to /bin/sh.  Installs a
 sentinel to detect when the user exits the shell and kills the
-buffer automatically. This function is to be used as value for
+buffer automatically.  This function is to be used as value for
 `shell-switcher-new-shell-function'."
   (let ((shell (or (unless (string= "" shell-switcher-ansi-term-shell)
                      shell-switcher-ansi-term-shell)
@@ -140,7 +140,7 @@ buffer automatically. This function is to be used as value for
                    (getenv "SHELL")
                    "/bin/sh")))
     (unless (file-executable-p shell)
-      (error "`shell-swicher' tried to use the shell `%s' for `ansi-term' but it is not executable." shell))
+      (error "`shell-swicher' tried to use the shell `%s' for `ansi-term' but it is not executable" shell))
     (prog1
         (ansi-term shell)
       (when (ignore-errors (get-buffer-process (current-buffer)))
@@ -189,7 +189,7 @@ shell-switcher function."
 (defun sswitcher--new-shell (&optional other-window)
   "Create and display a new shell.
 If OTHER-WINDOW is nil (the default), the new shell buffer is
-displayed in the current window. If OTHER-WINDOW is t, change
+displayed in the current window.  If OTHER-WINDOW is t, change
 another window.
 
 This function uses `shell-switcher-new-shell-function' to decide
@@ -202,10 +202,10 @@ what kind of shell to create."
 (defun sswitcher--no-more-shell-buffers (&optional other-window)
   "Create a new shell as there is no more to switch to.
 If `shell-switcher-ask-before-creating-new' is non-nil, ask the
-user first. If the answer is positive or the user was not asked,
-a new shell buffer is created. If OTHER-WINDOW is nil (the
-default), the shell buffer is displayed in the current window. If
-OTHER-WINDOW is t, change another window."
+user first.  If the answer is positive or the user was not asked,
+a new shell buffer is created.  If OTHER-WINDOW is nil (the
+default), the shell buffer is displayed in the current window.
+If OTHER-WINDOW is t, change another window."
   (when (or (not shell-switcher-ask-before-creating-new)
             (y-or-n-p "No active shell buffer, create new one? "))
     (let ((default-directory (or sswitcher--starting-default-directory default-directory)))
@@ -253,8 +253,8 @@ remove the keymap depends on user input and KEEP-PRED:
 (defun sswitcher--prepare-for-fast-key ()
   "Set a keymap so that one can switch buffers by pressing 1 key.
 The key to be pressed to continue switching buffers is the last
-key of the most recent key sequence. See
-`shell-switcher-switch-buffer' for more information. When this
+key of the most recent key sequence.  See
+`shell-switcher-switch-buffer' for more information.  When this
 key is pressed, calls `sswitcher--switch-partially'."
   (let* ((repeat-key (event-basic-type last-input-event))
 	 (message (format "Type %s again to continue switching"
@@ -281,13 +281,13 @@ If OTHER-WINDOW is t, change another window."
 (defun sswitcher--switch-buffer (&optional other-window)
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
-current one. Pressing the last key of the key sequence that call
+current one.  Pressing the last key of the key sequence that call
 this command will result in switching to the next shell buffer :
 for example, if `C-'' is bound to this command, repeatedly
 pressing `'' (quote) will let the user visit all shell
 buffers (this is actually done by `sswitcher--switch-partially'.
 If OTHER-WINDOW is nil (the default), the current window is used
-to display the shell buffer. If OTHER-WINDOW is t, the buffer is
+to display the shell buffer.  If OTHER-WINDOW is t, the buffer is
 displayed in the other window.
 
 If there is no shell buffer or if the only shell buffer is the
@@ -308,7 +308,7 @@ default) or the other window (if OTHER-WINDOW is t)."
 (defun shell-switcher-switch-buffer ()
   "Switch to the most recently accessed buffer.
 Switch to the most recently accessed shell buffer that is not the
-current one. Pressing the last key of the key sequence that call
+current one.  Pressing the last key of the key sequence that call
 this command will result in switching to the next shell buffer :
 for example, if `C-'' is bound to this command, repeatedly
 pressing `'' (quote) will let the user visit all shell

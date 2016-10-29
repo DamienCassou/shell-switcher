@@ -38,7 +38,7 @@
 
 (defun rswitcher-make ()
   "Return a new switcher.
-The switcher is internally implemented as a cons. The `car' of
+The switcher is internally implemented as a cons.  The `car' of
 this cons contains the list of elements in the rswitcher (see
 `rswitcher--elements') while its `cdr' contains the index of the
 most-recent element (see `rswitcher--last-pos')."
@@ -53,12 +53,12 @@ and manipulate SWITCHER."
 
 (defun rswitcher--last-pos (switcher)
   "Return the index of SWITCHER's most-recent element.
-A value of 0 means the first element of SWITCHER's elements. This
+A value of 0 means the first element of SWITCHER's elements.  This
 function returns nil in all cases except after a
 `rswitcher-switch-partial' (and the function
 `rswitcher--reset-last-pos' will make this function return nil
-again). See `rswitcher--most-recent-pos' and
-`rswitcher--most-recent' for higher-level functions. Change the
+again).  See `rswitcher--most-recent-pos' and
+`rswitcher--most-recent' for higher-level functions.  Change the
 value returned by this function by using
 `rswitcher--reset-last-pos', `rswitcher--increment-last-pos', and
 `rswitcher--set-last-pos'."
@@ -129,7 +129,8 @@ element is pointed to by the last pos field of SWITCHER."
     (setcar switcher (cdr elements)))))
 
 (defun rswitcher-memq (switcher elt)
-  "Check if SWITCHER's elements include ELT. Comparison done with `eq'."
+  "Check if SWITCHER's elements include ELT.
+Comparison done with `eq'."
   (memq elt (rswitcher--elements switcher)))
 
 (defun rswitcher--delete (switcher pos)
@@ -168,7 +169,7 @@ number of SWITCHER's elements minus 1."
 (defun rswitcher-switch-full (switcher)
   "Select the next most recent element in SWITCHER.
 This function is similar to pressing and releasing ALT+TAB in
-standard window managers. Repeatedly calling this function will
+standard window managers.  Repeatedly calling this function will
 always select the two most recent elements alternatively."
   (when (>= (rswitcher-length switcher) 2)
     (rswitcher-make-most-recent-elt-the-first switcher)
