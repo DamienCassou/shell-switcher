@@ -345,6 +345,26 @@ window."
   (interactive)
   (sswitcher--new-shell))
 
+;;;###autoload
+(defun shell-switcher-open-on-directory (directory)
+  "Open DIRECTORY in the user's favorite shell."
+  (interactive "FDirectory: ")
+  (let ((default-directory (if (file-directory-p directory)
+                               directory
+                             (file-name-directory directory))))
+    (shell-switcher-new-shell)))
+
+;;;###autoload
+(defun shell-switcher-open-on-bookmark (bookmark)
+  "Open BOOKMARK's location in the user's favorite shell."
+  (interactive (list (bookmark-completing-read "Bookmark: "
+				               bookmark-current-bookmark)))
+  (let* ((file (bookmark-location bookmark))
+         (default-directory (if (file-directory-p file)
+                                file
+                              (file-name-directory file))))
+    (shell-switcher-new-shell)))
+
 (provide 'shell-switcher)
 
 ;;; shell-switcher.el ends here
