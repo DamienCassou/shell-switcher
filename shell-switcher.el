@@ -365,6 +365,15 @@ window."
                               (file-name-directory file))))
     (shell-switcher-new-shell)))
 
+;;;###autoload
+(defun shell-switcher-open-on-project (&optional project)
+  "Open the project's root directory in the user's favorite shell.
+If PROJECT is nil, use `project-current'."
+  (interactive)
+  (when-let* ((project (or project (project-current t)))
+              (default-directory (car (project-roots project))))
+    (shell-switcher-new-shell)))
+
 (provide 'shell-switcher)
 
 ;;; shell-switcher.el ends here
