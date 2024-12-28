@@ -7,6 +7,7 @@
 ;; GIT: https://github.com/DamienCassou/shell-switcher
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp shell eshell term switcher
+;; Package-Requires: ((emacs "24"))
 ;;
 ;; This file is NOT part of GNU Emacs.
 ;;
