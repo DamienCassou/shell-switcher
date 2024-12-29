@@ -8,6 +8,7 @@
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp shell eshell term switcher
 ;; Package-Requires: ((emacs "24"))
+;; Version: 1.1.0
 ;;
 ;; This file is NOT part of GNU Emacs.
 ;;
