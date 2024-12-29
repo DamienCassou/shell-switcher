@@ -1,6 +1,6 @@
 ;;; shell-switcher.el --- Provide fast switching between shell buffers  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2012-2013 Damien Cassou
+;; Copyright (C) 2012-2024 Damien Cassou
 ;;
 ;; Author: Damien Cassou <damien@cassou.me>
 ;; Url: https://github.com/DamienCassou/shell-switcher
