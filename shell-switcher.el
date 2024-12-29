@@ -1,13 +1,14 @@
 ;;; shell-switcher.el --- Provide fast switching between shell buffers  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2012-2013 Damien Cassou
+;; Copyright (C) 2012-2024 Damien Cassou
 ;;
-;; Author: Damien Cassou <damien.cassou@gmail.com>
+;; Author: Damien Cassou <damien@cassou.me>
 ;; Url: https://github.com/DamienCassou/shell-switcher
 ;; GIT: https://github.com/DamienCassou/shell-switcher
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp shell eshell term switcher
 ;; Package-Requires: ((emacs "24"))
+;; Version: 1.1.0
 ;;
 ;; This file is NOT part of GNU Emacs.
 ;;

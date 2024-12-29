@@ -1,8 +1,8 @@
 ;;; rswitcher.el --- Structure and functions for switching elements  -*- lexical-binding: t; -*-
 ;;
-;; Copyright (C) 2012-2013 Damien Cassou
+;; Copyright (C) 2012-2024 Damien Cassou
 ;;
-;; Author: Damien Cassou <damien.cassou@gmail.com>
+;; Author: Damien Cassou <damien@cassou.me>
 ;; GIT: https://github.com/DamienCassou/shell-switcher
 ;; Created: 2012-06-27
 ;; Keywords: emacs package elisp switcher
