@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2012-2013 Damien Cassou
 ;;
-;; Author: Damien Cassou <damien.cassou@gmail.com>
+;; Author: Damien Cassou <damien@cassou.me>
 ;; Url: https://github.com/DamienCassou/shell-switcher
 ;; GIT: https://github.com/DamienCassou/shell-switcher
 ;; Created: 2012-06-27
